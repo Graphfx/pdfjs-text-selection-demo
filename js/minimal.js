@@ -68,6 +68,18 @@ window.onload = function () {
         var $pdfContainer = jQuery("#pdfContainer");
         $pdfContainer.css("height", canvas.height + "px").css("width", canvas.width + "px");
         $pdfContainer.append($canvas);
+        
+        var canvasOffset = $canvas.offset();
+        var $textLayerDiv = jQuery("<div />")
+            .addClass("textLayer")
+            .css("height", viewport.height + "px")
+            .css("width", viewport.width + "px")
+            .offset({
+                top: canvasOffset.top,
+                left: canvasOffset.left
+            });
+
+        $pdfContainer.append($textLayerDiv);
 
         //The following few lines of code set up scaling on the context if we are on a HiDPI display
         var outputScale = getOutputScale();
@@ -88,18 +100,6 @@ window.onload = function () {
         if (outputScale.scaled) {
             context.scale(outputScale.sx, outputScale.sy);
         }
-
-        var canvasOffset = $canvas.offset();
-        var $textLayerDiv = jQuery("<div />")
-            .addClass("textLayer")
-            .css("height", viewport.height + "px")
-            .css("width", viewport.width + "px")
-            .offset({
-                top: canvasOffset.top,
-                left: canvasOffset.left
-            });
-
-        $pdfContainer.append($textLayerDiv);
 
         page.getTextContent().then(function (textContent) {
             var textLayer = new TextLayerBuilder($textLayerDiv.get(0), 0); //The second zero is an index identifying
